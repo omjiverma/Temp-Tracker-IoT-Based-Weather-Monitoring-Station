@@ -100,6 +100,9 @@ Before you can run the code, you need to install the required libraries in the A
 
 - **Battery Sensor**:
   - Connect the Voltage divider as shown below to **A0** on NodeMCU for monitoring the battery.
+ 
+    ![image](https://github.com/user-attachments/assets/2b396435-270f-4f8d-aa90-b5ea23f769f1)
+
 
 ### 3. Blynk Setup
 

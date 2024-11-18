@@ -39,6 +39,8 @@ The system will:
 - **BMP280 Barometric Pressure Sensor**
 - **RTC DS3231 Real-Time Clock Module**
 - **0.94-inch OLED Display (SSD1306)**
+- **Li-Ion Battery**
+- **TP4056 Module**
 - **Resistors - 10k, 4.7k**
 
 
@@ -152,6 +154,8 @@ Once the code is uploaded, the NodeMCU will:
 
 - **Sensor Test**:
   - Checks the functionality of each sensor and displays the result on the OLED.
+## Final Device
+![imaage](https://github.com/omjiverma/Temp-Tracker-IoT-Based-Weather-Monitoring-Station/blob/main/final%20Device.png)
 
 ## Troubleshooting
 

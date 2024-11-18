@@ -1,8 +1,13 @@
-// BLYNK AUTH
-#define BLYNK_TEMPLATE_ID "##########"
-#define BLYNK_TEMPLATE_NAME "##########"
-#define BLYNK_AUTH_TOKEN "##########"
+// BLYNK AUTH CREDETIALS
+#define BLYNK_TEMPLATE_ID "xxxxxxxxxxxxxxxx"
+#define BLYNK_TEMPLATE_NAME "xxxxxxxxxxxxxx"
+#define BLYNK_AUTH_TOKEN "xxxxxxxxxxxxxxxxxxx"
 
+// WiFi Credentials
+const char* ssid = "xxxxxxx";
+const char* password = "xxxxxxxxxx";
+
+// LIBRARIES IMPORT
 #include <Wire.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
@@ -13,16 +18,11 @@
 #include <Adafruit_BMP280.h> // Library for BMP280
 #include <Battery.h> // Library for battery sensing
 
-// OLED display dimensions
+// OLED display dimensions setup
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 #define OLED_RESET -1
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-// WiFi Credentials
-const char* ssid = "infinix";
-const char* password = "mera9012430680";
-
 
 // RTC object
 RTC_DS3231 rtc;
@@ -37,8 +37,6 @@ Adafruit_BMP280 bmp; // Default I2C address is 0x76 or 0x77
 
 // BatterySense configuration
 #define BATTERY_PIN A0   // Analog pin for battery sensing
-#define MIN_VOLTAGE 3.0  // Minimum battery voltage
-#define MAX_VOLTAGE 4.2  // Maximum battery voltage
 Battery batt = Battery(3000, 4200, BATTERY_PIN, 10);
 
 // Arrays to store the last 5 readings
@@ -56,39 +54,34 @@ void setup() {
     Serial.println(F("OLED Display Not Found"));
     for (;;);
   }
+
   display.clearDisplay();
   display.display();
 
   // Loading Display
   LoadingScreen();
 
-  // Perform sensor tests
-  sensorTest();
-
   // Initialize RTC
-  if (!rtc.begin()) {
-    Serial.println("Couldn't find RTC");
-    while (1);
-  }
+  rtc.begin();
 
   // Initialize DHT sensor
   dht.begin();
 
   // Initialize BMP280
-  if (!bmp.begin()) {
-    Serial.println("BMP280 not found!");
-  }
-
+  bmp.begin();
   // Initialize BatterySense
   batt.begin(3300, 1.47, &sigmoidal);
 
+  // Perform sensor tests
+  sensorTest();
+
+  // Connect To Wifi
   connectWifi();
 
   // Initialize Blynk
   if (WiFi.status() == WL_CONNECTED)
     Blynk.begin(BLYNK_AUTH_TOKEN, ssid, password);
-
-}
+  }
 
 void loop() {
   // Get current time from RTC
@@ -98,7 +91,7 @@ void loop() {
   for (int i = 0; i < NUM_READINGS; i++) {
     tempReadings[i] = dht.readTemperature();
     humReadings[i] = dht.readHumidity();
-    pressReadings[i] = bmp.readPressure() / 100.0F;
+    pressReadings[i] = bmp.readPressure()/100.0F;
   }
 
   // Calculate averages
@@ -127,7 +120,6 @@ void loop() {
 
 void LoadingScreen() {
   display.clearDisplay();
-
   // Draw the cloud icon
   display.fillCircle(35, 20, 10, SSD1306_WHITE); // Left part of the cloud
   display.fillCircle(50, 10, 10, SSD1306_WHITE); // Top part of the cloud
@@ -205,7 +197,7 @@ void sensorTest() {
   // DHT Test
   display.setCursor(0, 24);
   Serial.print("DHT: ");
-  float tempTest = dht.readTemperature(); // Try to read temperature
+  float tempTest = dht.readHumidity(); // Try to read temperature
   if (!isnan(tempTest)) {
     display.println("DHT: OK");
     Serial.println("OK");
@@ -228,6 +220,8 @@ void sensorTest() {
 
   display.display();
   delay(1000);
+
+
   // Check for Battery
   display.setCursor(0, 48);
   Serial.print("Battery: ");
@@ -240,9 +234,9 @@ void sensorTest() {
   }
 
   display.display();
-  delay(2000); // Show sensor test results for 2 seconds
+  delay(1000); // Show sensor test results for 2 seconds
 }
-// ✅
+
 
 void displayTimeDateWeather(DateTime now, float temperature, float humidity,float pressure, int batteryPercentage) {
   display.clearDisplay();
@@ -283,7 +277,6 @@ void displayTimeDateWeather(DateTime now, float temperature, float humidity,floa
   int yearLastTwoDigits = now.year() % 100;  // Get the last two digits of the year
   display.print(yearLastTwoDigits);
 
-
   // Display battery percentage in top-right corner
   display.setCursor(SCREEN_WIDTH - 24, 2);
   display.setTextSize(1);
@@ -312,9 +305,6 @@ void displayTimeDateWeather(DateTime now, float temperature, float humidity,floa
     display.print("Hum: Error");
   }
 
-  // Read atmospheric pressure from BMP280 sensor
-  
-
   // Display atmospheric pressure
   display.setCursor(5, 35); // Position below humidity
   if (!isnan(pressure)) {
@@ -334,7 +324,7 @@ void displayTimeDateWeather(DateTime now, float temperature, float humidity,floa
   display.display();
 }
 
-  // Function to calculate the average of an array
+// Function to calculate the average of an array
   float calculateAverage(float arr[], int len) {
     float sum = 0;
     for (int i = 0; i < len; i++) {
@@ -393,6 +383,5 @@ void connectWifi() {
   delay(2000); // Show success message for 2 seconds
   display.clearDisplay(); // Clear display for the next screen
 }
-
 
 

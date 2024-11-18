@@ -39,23 +39,12 @@ The system will:
 - **BMP280 Barometric Pressure Sensor**
 - **RTC DS3231 Real-Time Clock Module**
 - **0.94-inch OLED Display (SSD1306)**
-- **Battery Sensor**
-- **Push Button** (for reset or additional control)
-- **Jumper Wires**
-- **Breadboard** (optional for prototyping)
+- **Resistors - 10k, 4.7k**
+
 
 ## Software Requirements
 
 - Arduino IDE
-  - [ESP8266 Board](https://github.com/esp8266/Arduino)
-  - [Blynk Library](https://github.com/blynkkk/blynk-library)
-  - [Adafruit SSD1306 Library](https://github.com/adafruit/Adafruit_SSD1306)
-  - [Adafruit GFX Library](https://github.com/adafruit/Adafruit-GFX-Library)
-  - [DHT Sensor Library](https://github.com/adafruit/DHT-sensor-library)
-  - [Adafruit BMP280 Library](https://github.com/adafruit/Adafruit_BMP280_Library)
-  - [RTClib Library](https://github.com/adafruit/RTClib)
-  - [Battery Sensor Library](https://github.com/haoyul/Battery)
-
 
 ## Setup Instructions
 
@@ -66,12 +55,13 @@ Before you can run the code, you need to install the required libraries in the A
 2. Go to **Sketch > Include Library > Manage Libraries...**
 3. Search for the following libraries and install them:
    - **Blynk**
+   - **ESP8266WIFI**
    - **Adafruit SSD1306**
    - **Adafruit GFX**
    - **DHT sensor library**
    - **Adafruit BMP280**
    - **RTClib**
-   - **Battery**
+   - **Battery Sense**
 
 ### 2. Hardware Connections
 
@@ -104,20 +94,34 @@ Before you can run the code, you need to install the required libraries in the A
     ![image](https://github.com/user-attachments/assets/2b396435-270f-4f8d-aa90-b5ea23f769f1)
 
 
-### 3. Blynk Setup
+### 3. Blynk Web Setup
 
-1. Download the Blynk app from the [App Store](https://apps.apple.com) or [Google Play](https://play.google.com/store).
-2. Create a Blynk account and log in.
-3. Create a new project in the Blynk app.
-4. Choose **ESP8266** as the device and select the connection type as **Wi-Fi**.
-5. You will receive an **Auth Token**. Copy this token.
-6. Replace the `BLYNK_AUTH_TOKEN` in the code with your token.
+1. Go to the [Blynk Web Dashboard](https://blynk.cloud/) and log in with your Blynk account.  
+2. Create a new project or workspace on the dashboard.  
+
+#### Creating the Device:
+3. Add a new device and select **ESP8266** as the hardware type with **Wi-Fi** as the connection method.  
+4. After creating the device, Blynk will generate an **Auth Token**,**BLYNK_TEMPLATE_ID**, **BLYNK_TEMPLATE_NAME** for the device. Copy this token.  
+5. Replace the `BLYNK_AUTH_TOKEN` in your code with the copied token.  
+
+#### Creating Data Streams:
+6. Navigate to the **Data Streams** section and create new streams for the data you want to monitor (e.g., temperature, humidity).  
+   - Choose the appropriate stream type (e.g., virtual pins, analog, or digital).  
+   - Assign a name, virtual pin, and any required parameters to the stream.  
+
+#### Designing the Dashboard:
+7. Go to the **Web Dashboard** tab and start adding widgets for the data streams you created (e.g., gauges, charts, labels).  
+   - Configure each widget to link to the corresponding data stream.  
+   - Adjust settings like range, units, and update intervals as needed.  
+8. Save your dashboard, and it will now display real-time data when your device is online and sending data.  
 
 ### 4. Arduino Code Upload
 
-1. Open the **WeatherBuddy.ino** file in Arduino IDE.
+1. Open the **Temp-Tracker.ino** file in Arduino IDE.
 2. Replace the following fields in the code:
    - **BLYNK_AUTH_TOKEN**: Paste your Blynk Auth Token here.
+   - **BLYNK_TEMPLATE_ID**: Paste your Blynk Template ID here.
+   - **BLYNK_TEMPLATE_NAME**: Paste your Blynk Template Name here.
    - **Wi-Fi SSID and Password**: Enter your Wi-Fi credentials (`ssid`, `password`).
 3. Connect the NodeMCU to your computer via USB.
 4. Select the correct **Board** and **Port** in the **Tools** menu in Arduino IDE.
@@ -158,6 +162,4 @@ Once the code is uploaded, the NodeMCU will:
 
 Feel free to fork the repository and submit pull requests for bug fixes or improvements. Please ensure that your contributions follow the existing code style.
 
-## License
 
-This project is open-source and available under the MIT License.

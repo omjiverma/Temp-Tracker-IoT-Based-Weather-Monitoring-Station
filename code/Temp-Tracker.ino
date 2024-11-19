@@ -7,6 +7,7 @@
 const char* ssid = "xxxxxxx";
 const char* password = "xxxxxxxxxx";
 
+
 // LIBRARIES IMPORT
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -64,6 +65,9 @@ void setup() {
   // Initialize RTC
   rtc.begin();
 
+  // Set the RTC to the current system time
+  //rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+
   // Initialize DHT sensor
   dht.begin();
 
@@ -86,7 +90,11 @@ void setup() {
 void loop() {
   // Get current time from RTC
   DateTime now = rtc.now();
-  
+  if(WiFi.status() != WL_CONNECTED){
+   for(int i=0;i<5;i++){
+    WiFi.begin(ssid, password);
+   }
+  }
   // Read sensor data
   for (int i = 0; i < NUM_READINGS; i++) {
     tempReadings[i] = dht.readTemperature();
@@ -113,9 +121,8 @@ void loop() {
     Blynk.virtualWrite(V2, avgPress);        // Send pressure to Virtual Pin V2
     Blynk.virtualWrite(V3, batteryPercentage); // Send battery percentage to Virtual Pin V3
   }
-
   // Delay to prevent excessive updates
-  delay(60000); // Update every 60 seconds
+  delay(5000); // Update every 60 seconds
 }
 
 void LoadingScreen() {
@@ -383,5 +390,3 @@ void connectWifi() {
   delay(2000); // Show success message for 2 seconds
   display.clearDisplay(); // Clear display for the next screen
 }
-
-
